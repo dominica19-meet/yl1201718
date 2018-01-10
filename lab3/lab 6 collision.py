@@ -1,5 +1,6 @@
 from turtle import *
 import random
+import math
 class Ball(Turtle):
 	def __init__(self,radius,color,speed):
 		Turtle.__init__(self)
@@ -19,6 +20,18 @@ def check_collision(ball1, ball2):
 	r2 = ball2.radius
 	x1 = ball1.xcor()
 	x2 = ball2.xcor()
+	y1 = ball1.ycor()
+	y2 = ball2.ycor()
+	d = math.sqrt(math.pow(x2 - x1,2)+math.pow(y2 - y1,2))
+	print (d)
+	print (r1+r2)
+	if(d < r1+r2):
+		return True
+	else:
+		return False 
 
-
+if (check_collision(ball1,ball2)) == True:
+	print("Collide")
+else:
+	print("No Collide")
 mainloop()
