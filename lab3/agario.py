@@ -3,6 +3,7 @@ import turtle
 import random 
 import time
 from ball import *
+turtle.bgcolor("pink")
 
 tracer(0)
 hideturtle()
@@ -12,7 +13,7 @@ SCREEN_WIDTH=turtle.getcanvas().winfo_width()/2
 SCREEN_HEIGHT=turtle.getcanvas().winfo_height()/2
 
 
-my_ball=Ball(100,0,5,10,100,"light blue")
+my_ball=Ball(100,0,0,0,100,"light blue")
 my_ball.goto(10,10)
 NUMBER_OF_BALLS=5
 MINIMUM_BALL_RADIUS = 10
@@ -44,8 +45,8 @@ def check_all_balls_collision():
 				ball_a_radious = ball_a.r
 				ball_b_radious = ball_b.r
 				
-				X_COORDINATE=random.randint(round(-SCREEN_WIDTH),round(screen_width))
-				y_COORDINATE= random.randint(round(-SCREEN_HEIGHT),round(screen-hieght))
+				X_COORDINATE=random.randint(round(-SCREEN_WIDTH),round(SCREEN_WIDTH))
+				Y_COORDINATE= random.randint(round(-SCREEN_HEIGHT),round(SCREEN_HEIGHT))
 				X_AXISPEED = random.randint(MINIMUM_BALL_DX , MAXIMUM_BALL_DX)
 				Y_AXISPEED = random.randint(MINIMUM_BALL_DY , MAXIMUM_BALL_DY)
 				while X_AXISPEED and Y_AXISPEED == 0:
@@ -76,10 +77,10 @@ def check_all_balls_collision():
 					ball_b.shapesize(ball_b.r/10)	
 def check_myball_collision():
 	for ball in BALLS:
-		if collide(MY_BALL,ball) == True:
+		if collide(my_ball,ball) == True:
 			ball_r4 = ball.r
-			my_ball_r4 = MY_BALL.r
-			if MY_BALL_r4 < ball_r4:
+			my_ball_r4 = my_ball.r
+			if my_ball_r4 < ball_r4:
 
 				return False
 
@@ -97,13 +98,13 @@ def check_myball_collision():
 			color = (random.random(),random.random(),random.random())
 			print(color)
 			ball.r = radius
-			ball.goto(X_COORDINATE, Y_COORDINATE)
+			ball.goto(X_COORDINATE, y_COORDINATE)
 			ball.dx = X_AXISPEED
 			ball.dy = Y_AXISPEED
 			ball.color(color)
-			ball.shapesize(ball_b.r/10)
-			MY_BALL.r = ball_a.r+1
-			MY_BALL.shapesize(ball_a.r/10)
+			ball.shapesize(ball.r/10)
+			my_ball.r = ball.r+1
+			my_ball.shapesize(ball.r/10)
 
 	# while True:
 	# 	for ball in BALLS:
@@ -112,12 +113,38 @@ def collide (ball_a,ball_b):
 	if ball_a == ball_b:
 		return False
 	#3**2
-	d = ((ball_b.xcor - ball_a.xcor)**2 + (ball_b.ycor -ball_a.ycor)**2)**0.5
+	d = ((ball_b.xcor() - ball_a.xcor())**2 + (ball_b.ycor() -ball_a.ycor())**2)**0.5
 	r = ball_b.r + ball_a.r
 	if d+10 <= r :
 		return True
 	else:
 		return False
+
+def movearound(event):
+	my_ball.goto(event.x-SCREEN_WIDTH,SCREEN_HEIGHT-event.y)
+
+turtle.getcanvas().bind("<Motion>",movearound)
+turtle.listen()
+
+while RUNNING == True:
+	if (SCREEN_WIDTH!= getcanvas().winfo_width()/2 or SCREEN_HEIGHT!=getcanvas().winfo_height()/2):
+		SCREEN_WIDTH = turtle.getcanvas().winfo_width()/2
+		SCREEN_HEIGHT = turtle.getcanvas().winfo_height()/2
+
+		RUNNING = check_myball_collision()
+		my_ball.move(SCREEN_HEIGHT,SCREEN_WIDTH)
+	move_all_balls()
+	check_myball_collision()
+	check_all_balls_collision()
+	turtle.getscreen().update()
+	time.sleep(0.05)
+
+	if RUNNING == False:
+
+		penup()
+		turtle.goto(0,0)
+		turtle.write("TRY AGAIN" , move = False , algin = "center" , font = ("Arial" , 50 , "blod")  )
+	
 
 
 
